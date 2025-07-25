@@ -18,7 +18,9 @@ const AuthSchema = new Schema({
 });
 
 // const AuthModel = mongoose.model('User', AuthSchema);
-const AuthModel = mongoose.model('User', AuthSchema);
+// const AuthModel = mongoose.model('User', AuthSchema);
+const AuthModel = mongoose.models.User || mongoose.model('User', AuthSchema);
+
 
 
 
