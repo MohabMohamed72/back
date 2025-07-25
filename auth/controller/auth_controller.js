@@ -24,19 +24,33 @@ const AuthModel = mongoose.model('User', AuthSchema);
 
 
 const AuthRegister = (app)=>{
-    app.post('/register', async(req, res) => {
+  app.post('/register', async(req, res) => {
+    try {
+        const AuthData = new AuthModel({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+        });
+
+        await AuthData.save();
+
         const DataStatus = {
             status: true,
-            message:"Data Send Successfully",
-            data:req.body
-        }
-        const AuthData = new AuthModel();
-        AuthData.name = req.body.name;
-        AuthData.email = req.body.email;
-        AuthData.password = req.body.password;
-        await AuthData.save();
+            message: "Data Sent Successfully",
+            data: req.body
+        };
+
         res.json(DataStatus);
-    });
+    } catch (error) {
+        console.error("Register Error:", error); // <--- IMPORTANT for debugging
+        res.status(500).json({
+            status: false,
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+});
+
 
    app.get('/get_users', async (req, res) => {
         
