@@ -15,41 +15,89 @@ const AuthSchema = new Schema({
         type: String,
         required: true
     },
+}, {
+    timestamps: true // This will add createdAt and updatedAt fields
 });
 
-// const AuthModel = mongoose.model('User', AuthSchema);
 const AuthModel = mongoose.models.User || mongoose.model('User', AuthSchema);
 
+const AuthRegister = (app) => {
+    // Register route with proper error handling
+    app.post('/register', async (req, res) => {
+        try {
+            // Validate required fields
+            const { name, email, password } = req.body;
+            
+            if (!name || !email || !password) {
+                return res.status(400).json({
+                    status: false,
+                    message: "All fields (name, email, password) are required",
+                    data: null
+                });
+            }
 
+            // Check if user already exists
+            const existingUser = await AuthModel.findOne({ email });
+            if (existingUser) {
+                return res.status(400).json({
+                    status: false,
+                    message: "User with this email already exists",
+                    data: null
+                });
+            }
 
+            // Create new user
+            const AuthData = new AuthModel({
+                name,
+                email,
+                password
+            });
 
-const AuthRegister = (app)=>{
-    app.post('/register', (req, res) => {
-        const DataStatus = {
-            status: true,
-            message:"Data Send Successfully",
-            data:req.body
-        }
-        const AuthData = new AuthModel();
-        AuthData.name = req.body.name;
-        AuthData.email = req.body.email;
-        AuthData.password = req.body.password;
-        AuthData.save();
-        res.json(DataStatus);
-    });
-
-   app.get('/get_users', async (req, res) => {
-        
-            const Data = await Auth.find(); 
+            // Save to database
+            const savedUser = await AuthData.save();
+            
             const DataStatus = {
                 status: true,
-                message: "Fetch Successfully",
+                message: "User registered successfully",
+                data: {
+                    id: savedUser._id,
+                    name: savedUser.name,
+                    email: savedUser.email
+                    // Don't return password in response
+                }
+            };
+            
+            res.status(201).json(DataStatus);
+            
+        } catch (error) {
+            console.error('Registration error:', error);
+            res.status(500).json({
+                status: false,
+                message: "Internal server error",
+                error: error.message
+            });
+        }
+    });
+
+    // Get users route (fixed model reference)
+    app.get('/get_users', async (req, res) => {
+        try {
+            const Data = await AuthModel.find().select('-password'); // Exclude password from response
+            const DataStatus = {
+                status: true,
+                message: "Users fetched successfully",
                 data: Data
-            }
-            // res.json(DataStatus);
-            res.send("welcoe")
-         
+            };
+            res.json(DataStatus);
+        } catch (error) {
+            console.error('Fetch users error:', error);
+            res.status(500).json({
+                status: false,
+                message: "Error fetching users",
+                error: error.message
+            });
+        }
     });
 }
 
-export default AuthRegister
+export default AuthRegister;
