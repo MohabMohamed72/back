@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(
     {
-        origin: 'https://yourfrontend.com', // Allow only this domain
+        origin: 'https://back-production-a5a6.up.railway.app', // Allow only this domain
         // or multiple domains:
         // origin: ['https://yourfrontend.com', 'http://localhost:3000'],
         methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
