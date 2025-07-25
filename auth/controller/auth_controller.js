@@ -17,51 +17,39 @@ const AuthSchema = new Schema({
     },
 });
 
-const AuthModel = mongoose.models.User || mongoose.model('User', AuthSchema);
+// const AuthModel = mongoose.model('User', AuthSchema);
+const AuthModel = mongoose.model('User', AuthSchema);
 
-const AuthRegister = (app) => {
-    app.post('/register', async (req, res) => {
-        try {
-            const AuthData = new AuthModel({
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password
-            });
-            
-            await AuthData.save();
 
-            res.json({
-                status: true,
-                message: "Data Saved Successfully",
-                data: AuthData
-            });
-        } catch (error) {
-            console.error("Error saving user:", error);
-            res.status(500).json({
-                status: false,
-                message: "Internal Server Error",
-                error: error.message
-            });
+
+
+const AuthRegister = (app)=>{
+    app.post('/register', async(req, res) => {
+        const DataStatus = {
+            status: true,
+            message:"Data Send Successfully",
+            data:req.body
         }
+        const AuthData = new AuthModel();
+        AuthData.name = req.body.name;
+        AuthData.email = req.body.email;
+        AuthData.password = req.body.password;
+        await AuthData.save();
+        res.json(DataStatus);
     });
 
-    // app.get('/get_users', async (req, res) => {
-    //     try {
-    //         const users = await AuthModel.find();
-    //         res.json({
-    //             status: true,
-    //             message: "Fetched Successfully",
-    //             data: users
-    //         });
-    //     } catch (error) {
-    //         console.error("Error fetching users:", error);
-    //         res.status(500).json({
-    //             status: false,
-    //             message: "Internal Server Error",
-    //             error: error.message
-    //         });
-    //     }
-    // });
-};
+   app.get('/get_users', async (req, res) => {
+        
+            const Data = await AuthModel.find(); 
+            const DataStatus = {
+                status: true,
+                message: "Fetch Successfully",
+                data: Data
+            }
+            // res.json(DataStatus);
+            res.send("welcoe")
+         
+    });
+}
 
-export default AuthRegister;
+export default AuthRegister
