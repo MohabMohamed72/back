@@ -24,7 +24,7 @@ const AuthModel = mongoose.models.User || mongoose.model('User', AuthSchema);
 
 
 const AuthRegister = (app)=>{
-    app.post('/register', (req, res) => {
+    app.post('/register', async(req, res) => {
         const DataStatus = {
             status: true,
             message:"Data Send Successfully",
@@ -34,7 +34,7 @@ const AuthRegister = (app)=>{
         AuthData.name = req.body.name;
         AuthData.email = req.body.email;
         AuthData.password = req.body.password;
-        AuthData.save();
+        await AuthData.save();
         res.json(DataStatus);
     });
 
