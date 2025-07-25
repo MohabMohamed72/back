@@ -45,23 +45,23 @@ const AuthRegister = (app) => {
         }
     });
 
-    app.get('/get_users', async (req, res) => {
-        try {
-            const users = await AuthModel.find();
-            res.json({
-                status: true,
-                message: "Fetched Successfully",
-                data: users
-            });
-        } catch (error) {
-            console.error("Error fetching users:", error);
-            res.status(500).json({
-                status: false,
-                message: "Internal Server Error",
-                error: error.message
-            });
-        }
-    });
+    // app.get('/get_users', async (req, res) => {
+    //     try {
+    //         const users = await AuthModel.find();
+    //         res.json({
+    //             status: true,
+    //             message: "Fetched Successfully",
+    //             data: users
+    //         });
+    //     } catch (error) {
+    //         console.error("Error fetching users:", error);
+    //         res.status(500).json({
+    //             status: false,
+    //             message: "Internal Server Error",
+    //             error: error.message
+    //         });
+    //     }
+    // });
 };
 
 export default AuthRegister;
