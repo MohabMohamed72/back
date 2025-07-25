@@ -1,4 +1,28 @@
-import Auth from '../model/auth_model.js'
+import mongoose from 'mongoose';
+
+const Schema = mongoose.Schema;
+
+const AuthSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+});
+
+// const AuthModel = mongoose.model('User', AuthSchema);
+const AuthModel = mongoose.models.User || mongoose.model('User', AuthSchema);
+
+
+
+
 const AuthRegister = (app)=>{
     app.post('/register', (req, res) => {
         const DataStatus = {
@@ -6,7 +30,7 @@ const AuthRegister = (app)=>{
             message:"Data Send Successfully",
             data:req.body
         }
-        const AuthData = new Auth();
+        const AuthData = new AuthModel();
         AuthData.name = req.body.name;
         AuthData.email = req.body.email;
         AuthData.password = req.body.password;
